@@ -1,0 +1,71 @@
+<main>
+  <!-- Function Bar -->
+  <div class="container-fluid row function-bar">
+    <div class="col-md-offset-3 col-md-6">
+      <div class="input-group text-center">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search recipes..."
+        />
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="button">SEARCH</button>
+        </span>
+      </div>
+    </div>
+    <div class="col-md-3 text-right">
+      <button class="btn btn-primary" title="Add Recipe">
+        <span class="glyphicon glyphicon-edit"></span>
+        ADD RECIPE
+      </button>
+      <button class="btn btn-primary" title="Favorite Recipe">
+        <span class="glyphicon glyphicon-bookmark"></span>
+        BOOKMARKS
+      </button>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <!-- Recipe List left -->
+    <div class="recipe-list col-md-3">
+      {{#each recipes}}
+        <li class="preview">
+          <a class="preview__link" href="#{{this._id}}">
+            <div class="preview__data">
+              <h4 class="preview__title">{{this.name}}</h4>
+              <p class="preview__description">{{this.description}}</p>
+            </div>
+          </a>
+        </li>
+      {{/each}}
+
+      <!-- Pagination Controls -->
+      <div class="pagination">
+        {{#if (gt currentPage 1)}}
+          <a
+            href="?page={{sub currentPage 1}}"
+            class="btn btn-secondary"
+          >Previous</a>
+        {{/if}}
+
+        <span>Page {{currentPage}} of {{totalPages}}</span>
+
+        {{#if (lt currentPage totalPages)}}
+          <a
+            href="?page={{add currentPage 1}}"
+            class="btn btn-secondary"
+          >Next</a>
+        {{/if}}
+      </div>
+    </div>
+
+    <!-- Recipe Details right -->
+    <div class="recipe-details col-md-9">
+      <div class="recipe-details__header">
+        <h1 class="text-center">Pasta with Tomato</h1>
+      </div>
+
+      <h2>Ingredients</h2>
+    </div>
+  </div>
+</main>
