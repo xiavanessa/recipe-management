@@ -49,27 +49,48 @@ const Recipe = mongoose.model("Recipe", recipeSchema);
 
 // Route
 app.get("/", async (req, res) => {
-  const page = parseInt(req.query.page) || 1; // Default to page 1
-  const limit = 6; // 6 recipes per page
+  const page = parseInt(req.query.page) || 1;
+  const limit = 6;
   const skip = (page - 1) * limit;
 
   try {
     const totalRecipes = await Recipe.countDocuments();
-
-    // Retrieve recipes for the current page
     const recipes = await Recipe.find().skip(skip).limit(limit);
-
-    //  total pages
     const totalPages = Math.ceil(totalRecipes / limit);
 
-    // Render the handlebars template
     res.render("index", {
       recipes,
       currentPage: page,
       totalPages,
+      selectedRecipe: null, // No recipe selected on the main page
     });
   } catch (error) {
     console.error("Error fetching recipes:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
+// New route for fetching a specific recipe by ID
+app.get("/api/recipe/:id", async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // Ensure the page is tracked
+  const limit = 6;
+  const skip = (page - 1) * limit;
+
+  try {
+    const totalRecipes = await Recipe.countDocuments();
+    const recipes = await Recipe.find().skip(skip).limit(limit); // Fetch recipes for current page
+    const selectedRecipe = await Recipe.findById(req.params.id);
+
+    if (!selectedRecipe) return res.status(404).send("Recipe not found");
+
+    res.render("index", {
+      recipes,
+      currentPage: page,
+      totalPages: Math.ceil(totalRecipes / limit),
+      selectedRecipe, // Pass the selected recipe data
+    });
+  } catch (error) {
+    console.error("Error fetching recipe details:", error);
     res.status(500).send("Server Error");
   }
 });

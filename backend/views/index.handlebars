@@ -28,16 +28,18 @@
   <div class="container-fluid">
     <!-- Recipe List left -->
     <div class="recipe-list col-md-3">
-      {{#each recipes}}
-        <li class="preview">
-          <a class="preview__link" href="#{{this._id}}">
-            <div class="preview__data">
-              <h4 class="preview__title">{{this.name}}</h4>
-              <p class="preview__description">{{this.description}}</p>
-            </div>
-          </a>
-        </li>
-      {{/each}}
+      <ul>
+        {{#each recipes}}
+          <li class="preview">
+            <a class="preview__link" href="/api/recipe/{{this._id}}">
+              <div class="preview__data">
+                <h4 class="preview__title">{{this.name}}</h4>
+                <p class="preview__description">{{this.description}}</p>
+              </div>
+            </a>
+          </li>
+        {{/each}}
+      </ul>
 
       <!-- Pagination Controls -->
       <div class="pagination">
@@ -61,11 +63,29 @@
 
     <!-- Recipe Details right -->
     <div class="recipe-details col-md-9">
-      <div class="recipe-details__header">
-        <h1 class="text-center">Pasta with Tomato</h1>
-      </div>
+      {{#if selectedRecipe}}
+        <div class="recipe-details__header">
+          <h1 class="text-center">{{selectedRecipe.name}}</h1>
+          <p class="text-center">{{selectedRecipe.description}}</p>
+        </div>
+        <img
+          src="{{selectedRecipe.image}}"
+          alt="{{selectedRecipe.name}}"
+          class="img-fluid"
+        />
 
-      <h2>Ingredients</h2>
+        <h4>Ingredients:</h4>
+        <ul>
+          {{#each selectedRecipe.ingredients}}
+            <li>{{this}}</li>
+          {{/each}}
+        </ul>
+
+        <h4>Instructions:</h4>
+        <p>{{selectedRecipe.instructions}}</p>
+      {{else}}
+        <p class="text-center">Select a recipe to view its details.</p>
+      {{/if}}
     </div>
   </div>
 </main>
