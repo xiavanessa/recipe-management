@@ -7,6 +7,10 @@
 .recipe-list {
   padding: 15px;
 }
+
+.recipe-list ul {
+  padding: 0;
+}
 .preview {
   list-style: none;
   margin-bottom: 15px;
