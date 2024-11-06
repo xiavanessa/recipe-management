@@ -71,4 +71,21 @@ router.post("/api/recipe", async (req, res) => {
   }
 });
 
+// update a recipe
+router.put("/api/recipe/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updatedRecipe = req.body;
+    const recipe = await Recipe.findByIdAndUpdate(id, updatedRecipe, {
+      new: true,
+    });
+
+    if (!recipe) return res.status(404).send("Recipe not found");
+    res.status(200).json(recipe);
+  } catch (error) {
+    console.error("Error updating recipe:", error);
+    res.status(500).send("Server Error");
+  }
+});
+
 module.exports = router;

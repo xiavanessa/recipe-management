@@ -132,9 +132,7 @@
             class="btn btn-secondary"
           >Previous</a>
         {{/if}}
-
         <span>Page {{currentPage}} of {{totalPages}}</span>
-
         {{#if (lt currentPage totalPages)}}
           <a
             href="?page={{add currentPage 1}}"
@@ -144,31 +142,133 @@
       </div>
     </div>
 
-    <!-- Recipe Details right -->
+    <!-- Recipe Details Right -->
     <div class="recipe-details col-md-9">
       {{#if selectedRecipe}}
         <div class="recipe-details__header">
           <h1 class="text-center">{{selectedRecipe.name}}</h1>
           <p class="text-center">{{selectedRecipe.description}}</p>
         </div>
-        <img
-          src="{{selectedRecipe.image}}"
-          alt="{{selectedRecipe.name}}"
-          class="img-fluid"
-        />
-
-        <h4>Ingredients:</h4>
-        <ul>
-          {{#each selectedRecipe.ingredients}}
-            <li>{{this}}</li>
-          {{/each}}
-        </ul>
+        <div class="row">
+          <div class="col-md-6">
+            <h4>Ingredients:</h4>
+            <ul class="list-unstyled">
+              {{#each selectedRecipe.ingredients}}
+                <li>{{this}}</li>
+              {{/each}}
+            </ul>
+          </div>
+          <div class="col-md-6">
+            <img
+              src="{{selectedRecipe.image}}"
+              alt="{{selectedRecipe.name}}"
+              class="img-fluid"
+            />
+          </div>
+        </div>
 
         <h4>Instructions:</h4>
         <p>{{selectedRecipe.instructions}}</p>
+
+        <!-- Edit Button -->
+        <button
+          class="btn btn-primary mt-3 edit-btn"
+          data-toggle="modal"
+          data-target="#editRecipeModal"
+          data-id="{{selectedRecipe._id}}"
+        >Edit Recipe</button>
       {{else}}
         <p class="text-center">Select a recipe to view its details.</p>
       {{/if}}
     </div>
+
+    <!-- Edit Recipe Modal -->
+    <div
+      class="modal fade"
+      id="editRecipeModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="editRecipeModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editRecipeModalLabel">Edit Recipe</h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form id="editRecipeForm">
+            <div class="modal-body">
+              <input type="hidden" id="edit-recipe-id" name="id" />
+              <div class="form-group">
+                <label for="edit-recipe-name">Name</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="edit-recipe-name"
+                  name="name"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="edit-recipe-description">Description</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="edit-recipe-description"
+                  name="description"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="edit-recipe-ingredients">Ingredients
+                  (comma-separated)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="edit-recipe-ingredients"
+                  name="ingredients"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label for="edit-recipe-instructions">Instructions</label>
+                <textarea
+                  class="form-control"
+                  id="edit-recipe-instructions"
+                  name="instructions"
+                  required
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label for="edit-recipe-image">Image URL (optional)</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="edit-recipe-image"
+                  name="image"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >Close</button>
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
   </div>
 </main>

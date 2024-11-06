@@ -43,14 +43,3 @@ Implement full-text search functionality to allow users to search for recipes ba
 Add image upload functionality for recipes.
 Implement a search functionality that filters recipes based on their names and ingredients.
 Implement appropriate form validation and error handling.
-
-{
-"\_id": "1",
-"name": "Spaghetti Bolognese",
-"description": "A classic Italian pasta dish.",
-"ingredients": ["spaghetti", "minced beef", "onion", "garlic", "tomato sauce"],
-"instructions": "Cook spaghetti. In a pan, cook minced beef with onion and garlic, then add tomato sauce...",
-"image": "/uploads/spaghetti.jpg",
-"createdAt": "2023-01-01T12:00:00Z",
-"updatedAt": "2023-01-01T12:00:00Z"
-}
