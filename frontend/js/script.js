@@ -1,4 +1,24 @@
 document.addEventListener("DOMContentLoaded", function () {
+  //remember the current page
+  const pagination = function () {
+    document.querySelectorAll(".preview__link").forEach(function (link) {
+      link.addEventListener("click", function (event) {
+        const currentPage =
+          new URLSearchParams(window.location.search).get("page") || 1;
+
+        const recipeId = link
+          .getAttribute("href")
+          .split("/")
+          .pop()
+          .split("?")[0]; // Get the recipe ID from the link href
+        const newUrl = `/api/recipe/${recipeId}?page=${currentPage}`;
+
+        window.location.href = newUrl;
+        event.preventDefault();
+      });
+    });
+  };
+
   const addRecipeBtn = function () {
     document
       .getElementById("addRecipeForm")
@@ -108,6 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const init = function () {
     addRecipeBtn();
     editRecipeBtns();
+    pagination();
   };
   init();
 });
