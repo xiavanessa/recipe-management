@@ -50,6 +50,21 @@ router.get("/api/recipe/:id", async (req, res) => {
   }
 });
 
+// JSON API
+router.get("/api/recipes/:id", async (req, res) => {
+  // Changed route to /api/recipes/:id
+  try {
+    const selectedRecipe = await Recipe.findById(req.params.id);
+    if (!selectedRecipe) {
+      return res.status(404).json({ message: "Recipe not found" });
+    }
+    res.status(200).json(selectedRecipe); // Return JSON for modal population
+  } catch (error) {
+    console.error("Error fetching recipe:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 // Route to add a new recipe
 router.post("/api/recipe", async (req, res) => {
   const { name, description, ingredients, instructions, image } = req.body;

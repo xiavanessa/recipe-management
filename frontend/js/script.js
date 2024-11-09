@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
+  // Add Recipe Button
   const addRecipeBtn = function () {
     document
       .getElementById("addRecipeForm")
@@ -64,18 +65,20 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   };
 
+  //clicking the edit button
   const editRecipeBtns = function () {
     document
       .querySelector('.edit-btn[data-target="#editRecipeModal"]')
       .addEventListener("click", async function () {
         // Get the recipe ID from the button
         const recipeId = this.getAttribute("data-id");
-        console.log("Edit recipe button clicked with ID:", recipeId);
+        console.log("Edit recipe button clicked with ID2:", recipeId);
         document.getElementById("edit-recipe-id").value = recipeId;
 
         // Fetch recipe details
-        const response = await fetch(`/api/recipe/${recipeId}`);
+        const response = await fetch(`/api/recipes/${recipeId}`);
         const recipe = await response.json();
+        console.log("Recipe data:", recipe);
 
         // Populate the modal with recipe details
         document.getElementById("edit-recipe-id").value = recipe._id;
