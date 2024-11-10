@@ -25,6 +25,26 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Route to search recipes by name or ingredients
+router.get("/api/recipes/search", async (req, res) => {
+  const searchQuery = req.query.q;
+
+  try {
+    // Use a case-insensitive regex search on `name` and `ingredients` fields
+    const recipes = await Recipe.find({
+      $or: [
+        { name: { $regex: searchQuery, $options: "i" } },
+        { ingredients: { $regex: searchQuery, $options: "i" } },
+      ],
+    });
+
+    res.status(200).json(recipes);
+  } catch (error) {
+    console.error("Error during search:", error);
+    res.status(500).json({ message: "Search failed" });
+  }
+});
+
 // Route to fetch a specific recipe by ID
 router.get("/api/recipe/:id", async (req, res) => {
   const page = parseInt(req.query.page) || 1;

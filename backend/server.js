@@ -7,6 +7,10 @@ const {
 } = require("@handlebars/allow-prototype-access");
 const Handlebars = require("handlebars");
 const recipeRoutes = require("./routes/recipeRoutes"); // Import the recipe routes
+require("dotenv").config(); // Load .env file
+const dbURI = process.env.MONGODB_URI; // Access the MongoDB URI
+
+//PORT
 const PORT = 5000;
 
 // Initialize Express
@@ -34,7 +38,7 @@ app.use(express.json());
 
 // Connect to MongoDB
 mongoose
-  .connect("mongodb://127.0.0.1:27017/recipeDB")
+  .connect(dbURI)
   .then(() => console.log("Connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB:", err));
 

@@ -128,10 +128,85 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   };
 
+  //search function
+  const search = function () {
+    document
+      .querySelector(".search-btn")
+      .addEventListener("click", async () => {
+        const query = document.getElementById("searchQuery").value;
+
+        try {
+          const response = await fetch(
+            `/api/recipes/search?q=${encodeURIComponent(query)}`
+          );
+          if (!response.ok)
+            throw new Error("Search failed with status " + response.status);
+          //Copy the URL and inject the search query as parameter
+          const newUrl = new URL(window.location);
+          newUrl.searchParams.set("q", query);
+          window.history.pushState({}, "", newUrl);
+
+          //Update the list
+          const recipes = await response.json();
+          updateRecipeList(recipes); // Update the UI with search results
+        } catch (error) {
+          console.error("Error during search:", error);
+          alert(
+            "Error during search. Please check the server logs for more details."
+          );
+        }
+      });
+  };
+
+  const updateRecipeList = function (recipes) {
+    const recipeListContainer = document.querySelector(".recipe-list ul");
+    recipeListContainer.innerHTML = ""; // Clear the existing list
+
+    recipes.forEach((recipe) => {
+      const listItem = document.createElement("li");
+      listItem.classList.add("preview");
+
+      listItem.innerHTML = `
+        <a class="preview__link" href="/api/recipe/${recipe._id}">
+          <div class="preview__data">
+            <h4 class="preview__title">${recipe.name}</h4>
+            <p class="preview__description">${recipe.description}</p>
+          </div>
+        </a>
+      `;
+
+      recipeListContainer.appendChild(listItem);
+    });
+  };
+
+  const backBtnShow = function () {
+    document.querySelector(".btn-default").addEventListener("click", () => {
+      document.getElementById("backButton").style.display = "inline-block";
+    });
+  };
+
+  const resetDefaultView = function () {
+    document.getElementById("backButton").addEventListener("click", () => {
+      window.location.href = "/?page=1";
+    });
+  };
+
   const init = function () {
     addRecipeBtn();
     editRecipeBtns();
     pagination();
+    search();
+    backBtnShow();
+    resetDefaultView();
+
+    // Check for search query in params
+    const searchQuery = new URLSearchParams(window.location.search).get("q");
+
+    // If there is a search query, trigger the search function, with the query
+    if (searchQuery) {
+      document.getElementById("searchQuery").value = searchQuery;
+      document.querySelector(".search-btn").click();
+    }
   };
   init();
 });
