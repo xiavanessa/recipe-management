@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log({ name, description, ingredients, instructions, image });
 
         try {
-          const response = await fetch("/api/recipe", {
+          const response = await fetch("/api/recipes", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function () {
         };
 
         // update the recipe
-        const response = await fetch(`/api/recipe/${recipeId}`, {
+        const response = await fetch(`/api/recipes/${recipeId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(updatedRecipe),
@@ -139,6 +139,46 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error("Error updating recipe");
         }
       });
+  };
+
+  //clicking the delete button
+  const deleteRecipeBtn = function () {
+    const deleteButtons = document.querySelectorAll(".delete-btn");
+    if (!deleteButtons) return;
+
+    deleteButtons.forEach(function (button) {
+      const recipeId = button.getAttribute("data-id");
+      button.addEventListener("click", async function () {
+        if (confirm("Are you sure you want to delete this recipe?")) {
+          try {
+            const response = await fetch(`/api/recipes/${recipeId}`, {
+              method: "DELETE",
+            });
+
+            if (!response.ok) throw new Error("Failed to delete recipe");
+            // Capture current `page` and `q` parameters from the URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentPage = urlParams.get("page") || 1;
+            const searchQuery = urlParams.get("q") || ""; // Capture the search query if present
+
+            // Clear recipe details section
+            document.querySelector(".recipe-details").innerHTML =
+              "<p class='text-center'>Select a recipe to view its details.</p>";
+
+            alert("Recipe deleted successfully");
+
+            // Redirect to the main list view with the same `page` and `limit=10` parameters
+            const newUrl = `/?page=${currentPage}&limit=10${
+              searchQuery ? `&q=${encodeURIComponent(searchQuery)}` : ""
+            }`;
+            window.location.href = newUrl;
+          } catch (error) {
+            console.error("Error deleting recipe:", error);
+            alert("Failed to delete recipe. Please try again.");
+          }
+        }
+      });
+    });
   };
 
   //search function
@@ -172,9 +212,12 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   };
 
+  // Update the recipe list with search results
   const updateRecipeList = function (recipes) {
     const recipeListContainer = document.querySelector(".recipe-list ul");
     recipeListContainer.innerHTML = ""; // Clear the existing list
+    const paginationContainer = document.querySelector(".pagination");
+    paginationContainer.innerHTML = ""; // Clear the existing pagination
 
     // Get the search query from the input field
     const searchQuery = document.getElementById("searchQuery").value;
@@ -244,6 +287,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const init = function () {
     addRecipeBtn();
     editRecipeBtns();
+    deleteRecipeBtn();
     pagination();
     search();
     backBtnShow();

@@ -87,7 +87,7 @@ router.get("/api/recipes/:id", async (req, res) => {
 });
 
 // Route to add a new recipe
-router.post("/api/recipe", async (req, res) => {
+router.post("/api/recipes", async (req, res) => {
   const { name, description, ingredients, instructions, image } = req.body;
 
   try {
@@ -108,7 +108,7 @@ router.post("/api/recipe", async (req, res) => {
 });
 
 // update a recipe
-router.put("/api/recipe/:id", async (req, res) => {
+router.put("/api/recipes/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const updatedRecipe = req.body;
@@ -121,6 +121,18 @@ router.put("/api/recipe/:id", async (req, res) => {
   } catch (error) {
     console.error("Error updating recipe:", error);
     res.status(500).send("Server Error");
+  }
+});
+
+// Delete recipe by ID
+router.delete("/api/recipes/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Recipe.findByIdAndDelete(id);
+    res.status(200).json({ message: "Recipe deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting recipe:", error);
+    res.status(500).json({ message: "Failed to delete recipe" });
   }
 });
 

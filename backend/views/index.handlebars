@@ -193,6 +193,13 @@
           data-target="#editRecipeModal"
           data-id="{{selectedRecipe._id}}"
         >Edit Recipe</button>
+        {{! delete recipe button }}
+        <button
+          class="btn btn-danger mt-3 delete-btn"
+          data-id="{{selectedRecipe._id}}"
+        >
+          Delete Recipe
+        </button>
       {{else}}
         <p class="text-center">Select a recipe to view its details.</p>
       {{/if}}
