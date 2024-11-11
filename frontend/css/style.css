@@ -7,6 +7,10 @@ body {
   background-color: beige;
 }
 
+.logo {
+  width: 60px;
+}
+
 /* recipe-list */
 .recipe-list {
   padding: 15px;

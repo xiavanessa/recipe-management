@@ -6,9 +6,12 @@ const {
   allowInsecurePrototypeAccess,
 } = require("@handlebars/allow-prototype-access");
 const Handlebars = require("handlebars");
-const recipeRoutes = require("./routes/recipeRoutes"); // Import the recipe routes
-require("dotenv").config(); // Load .env file
-const dbURI = process.env.MONGODB_URI; // Access the MongoDB URI
+// Import the recipe routes
+const recipeRoutes = require("./routes/recipeRoutes");
+// Load .env file
+require("dotenv").config();
+// Access the MongoDB URI
+const dbURI = process.env.MONGODB_URI;
 
 //PORT
 const PORT = 5000;
@@ -20,7 +23,8 @@ const app = express();
 app.engine(
   "handlebars",
   engine({
-    handlebars: allowInsecurePrototypeAccess(Handlebars), // Enable prototype access
+    // Enable prototype access
+    handlebars: allowInsecurePrototypeAccess(Handlebars),
     helpers: {
       add: (a, b) => a + b,
       sub: (a, b) => a - b,

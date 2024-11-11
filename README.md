@@ -1,1 +1,3 @@
 # recipe-management
+
+npm install

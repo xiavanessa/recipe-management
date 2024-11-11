@@ -3,15 +3,20 @@ document.addEventListener("DOMContentLoaded", function () {
   const pagination = function () {
     document.querySelectorAll(".preview__link").forEach(function (link) {
       link.addEventListener("click", function (event) {
-        const currentPage =
-          new URLSearchParams(window.location.search).get("page") || 1;
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentPage = urlParams.get("page") || 1;
+        // Preserve the search query
+        const query = urlParams.get("q") || "";
 
+        // Get the recipe ID from the link href
         const recipeId = link
           .getAttribute("href")
           .split("/")
           .pop()
-          .split("?")[0]; // Get the recipe ID from the link href
-        const newUrl = `/api/recipe/${recipeId}?page=${currentPage}`;
+          .split("?")[0];
+        const newUrl = `/api/recipe/${recipeId}?page=${currentPage}&q=${encodeURIComponent(
+          query
+        )}`;
 
         window.location.href = newUrl;
         event.preventDefault();
@@ -24,7 +29,8 @@ document.addEventListener("DOMContentLoaded", function () {
     document
       .getElementById("addRecipeForm")
       .addEventListener("submit", async function (event) {
-        event.preventDefault(); // Prevent default form submission
+        // Prevent default form submission
+        event.preventDefault();
 
         const name = document.getElementById("recipeName").value;
         const description = document.getElementById("recipeDescription").value;
@@ -34,8 +40,11 @@ document.addEventListener("DOMContentLoaded", function () {
           .map((item) => item.trim());
         const instructions =
           document.getElementById("recipeInstructions").value;
-        const image = document.getElementById("recipeImage").value || null; // Optional
-
+        const image =
+          document.getElementById(
+            // Default to null if no image URL is provided
+            "recipeImage"
+          ).value || null;
         console.log({ name, description, ingredients, instructions, image });
 
         try {
@@ -67,12 +76,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //clicking the edit button
   const editRecipeBtns = function () {
-    document
-      .querySelector('.edit-btn[data-target="#editRecipeModal"]')
-      .addEventListener("click", async function () {
+    const editButton = document.querySelector(
+      '.edit-btn[data-target="#editRecipeModal"]'
+    );
+    if (editButton) {
+      editButton.addEventListener("click", async function () {
         // Get the recipe ID from the button
         const recipeId = this.getAttribute("data-id");
         console.log("Edit recipe button clicked with ID2:", recipeId);
+        if (!recipeId) return;
         document.getElementById("edit-recipe-id").value = recipeId;
 
         // Fetch recipe details
@@ -91,6 +103,7 @@ document.addEventListener("DOMContentLoaded", function () {
           recipe.instructions;
         document.getElementById("edit-recipe-image").value = recipe.image || "";
       });
+    }
 
     // Submit Edit Form
     document
@@ -148,7 +161,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
           //Update the list
           const recipes = await response.json();
-          updateRecipeList(recipes); // Update the UI with search results
+          // Update the UI with search results
+          updateRecipeList(recipes);
         } catch (error) {
           console.error("Error during search:", error);
           alert(
@@ -162,12 +176,17 @@ document.addEventListener("DOMContentLoaded", function () {
     const recipeListContainer = document.querySelector(".recipe-list ul");
     recipeListContainer.innerHTML = ""; // Clear the existing list
 
+    // Get the search query from the input field
+    const searchQuery = document.getElementById("searchQuery").value;
+
     recipes.forEach((recipe) => {
       const listItem = document.createElement("li");
       listItem.classList.add("preview");
 
       listItem.innerHTML = `
-        <a class="preview__link" href="/api/recipe/${recipe._id}">
+        <a class="preview__link" href="/api/recipe/${
+          recipe._id
+        }?q=${encodeURIComponent(searchQuery)}">
           <div class="preview__data">
             <h4 class="preview__title">${recipe.name}</h4>
             <p class="preview__description">${recipe.description}</p>
@@ -179,16 +198,47 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
+  // Show the Back button when in search mode
   const backBtnShow = function () {
-    document.querySelector(".btn-default").addEventListener("click", () => {
+    document.querySelector(".search-btn").addEventListener("click", () => {
       document.getElementById("backButton").style.display = "inline-block";
     });
   };
 
   const resetDefaultView = function () {
     document.getElementById("backButton").addEventListener("click", () => {
-      window.location.href = "/?page=1";
+      // Clear the search input and remove the "q" parameter from the URL
+      document.getElementById("searchQuery").value = "";
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.delete("q");
+      newUrl.searchParams.set("page", 1);
+      window.location.href = newUrl;
     });
+  };
+
+  // Display search results on page load
+  const displayResearches = async function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchQuery = urlParams.get("q");
+
+    if (searchQuery) {
+      // Populate the search input with the query
+      document.getElementById("searchQuery").value = searchQuery;
+
+      // Fetch and display search results
+      try {
+        const response = await fetch(
+          `/api/recipes/search?q=${encodeURIComponent(searchQuery)}`
+        );
+        const recipes = await response.json();
+        updateRecipeList(recipes);
+
+        // Show the Back button since we are in search mode
+        document.getElementById("backButton").style.display = "inline-block";
+      } catch (error) {
+        console.error("Error loading search results on page load:", error);
+      }
+    }
   };
 
   const init = function () {
@@ -198,15 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
     search();
     backBtnShow();
     resetDefaultView();
-
-    // Check for search query in params
-    const searchQuery = new URLSearchParams(window.location.search).get("q");
-
-    // If there is a search query, trigger the search function, with the query
-    if (searchQuery) {
-      document.getElementById("searchQuery").value = searchQuery;
-      document.querySelector(".search-btn").click();
-    }
+    displayResearches();
   };
   init();
 });

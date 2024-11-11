@@ -17,7 +17,7 @@ router.get("/", async (req, res) => {
       recipes,
       currentPage: page,
       totalPages,
-      selectedRecipe: null, // No recipe selected on the main page
+      selectedRecipe: null,
     });
   } catch (error) {
     console.error("Error fetching recipes:", error);
@@ -78,7 +78,8 @@ router.get("/api/recipes/:id", async (req, res) => {
     if (!selectedRecipe) {
       return res.status(404).json({ message: "Recipe not found" });
     }
-    res.status(200).json(selectedRecipe); // Return JSON for modal population
+    // Return JSON for modal population
+    res.status(200).json(selectedRecipe);
   } catch (error) {
     console.error("Error fetching recipe:", error);
     res.status(500).json({ message: "Server Error" });
