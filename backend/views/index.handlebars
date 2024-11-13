@@ -26,7 +26,7 @@
         </span>
       </div>
     </div>
-    <div class="col-md-3 text-right">
+    <div class="col-md-3">
       <!-- Add Recipe Modal -->
       <div
         class="modal fade"
@@ -102,24 +102,26 @@
           </div>
         </div>
       </div>
-      <!-- ADD button to trigger the modal -->
-      <button
-        class="btn btn-primary function-btn btn-sm"
-        title="Add Recipe"
-        data-toggle="modal"
-        data-target="#addRecipeModal"
-      >
-        <span class="glyphicon glyphicon-edit"></span>
-        ADD RECIPE
-      </button>
-      {{! Favorite Button }}
-      <button
-        class="btn btn-primary function-btn btn-sm"
-        title="Favorite Recipe"
-      >
-        <span class="glyphicon glyphicon-bookmark"></span>
-        BOOKMARKS
-      </button>
+      <div class="text-right">
+        <!-- ADD button to trigger the modal -->
+        <button
+          class="btn btn-primary function-btn btn-sm"
+          title="Add Recipe"
+          data-toggle="modal"
+          data-target="#addRecipeModal"
+        >
+          <span class="glyphicon glyphicon-edit"></span>
+          ADD RECIPE
+        </button>
+        {{! Favorite Button }}
+        <button
+          class="btn btn-primary function-btn btn-sm"
+          title="Favorite Recipe"
+        >
+          <span class="glyphicon glyphicon-bookmark"></span>
+          BOOKMARKS
+        </button>
+      </div>
     </div>
   </div>
 

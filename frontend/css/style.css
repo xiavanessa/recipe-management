@@ -34,7 +34,7 @@ body {
   transition: transform 0.2s;
 }
 .preview:hover {
-  transform: scale(1.02);
+  transform: scale(1.05);
 }
 .preview__link {
   text-decoration: none;
@@ -43,6 +43,7 @@ body {
   display: flex;
   align-items: center;
 }
+
 .preview__title {
   font-size: 16px;
   font-weight: bold;
