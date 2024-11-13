@@ -5,7 +5,7 @@
       <img src="/img/logo.png" alt="logo" class="img-fluid logo" />
     </div>
     <div class="col-md-6">
-      <div class="input-group text-center">
+      <div class="input-group">
         <input
           type="text"
           id="searchQuery"
@@ -23,7 +23,6 @@
             id="backButton"
             style="display:none;"
           >BACK</button>
-
         </span>
       </div>
     </div>
@@ -103,10 +102,9 @@
           </div>
         </div>
       </div>
-
       <!-- ADD button to trigger the modal -->
       <button
-        class="btn btn-primary"
+        class="btn btn-primary function-btn btn-sm"
         title="Add Recipe"
         data-toggle="modal"
         data-target="#addRecipeModal"
@@ -114,8 +112,11 @@
         <span class="glyphicon glyphicon-edit"></span>
         ADD RECIPE
       </button>
-
-      <button class="btn btn-primary" title="Favorite Recipe">
+      {{! Favorite Button }}
+      <button
+        class="btn btn-primary function-btn btn-sm"
+        title="Favorite Recipe"
+      >
         <span class="glyphicon glyphicon-bookmark"></span>
         BOOKMARKS
       </button>
@@ -185,21 +186,25 @@
         </div>
         <h4 class="title-primary">Instructions:</h4>
         <p class="title-tertiary">{{selectedRecipe.instructions}}</p>
+        <div class="text-center mt-3 right-btn-group">
+          <!-- Edit Button -->
+          <button
+            class="btn btn-primary mr-2 edit-btn"
+            data-toggle="modal"
+            data-target="#editRecipeModal"
+            data-id="{{selectedRecipe._id}}"
+          >
+            Edit Recipe
+          </button>
 
-        <!-- Edit Button -->
-        <button
-          class="btn btn-primary mt-3 edit-btn"
-          data-toggle="modal"
-          data-target="#editRecipeModal"
-          data-id="{{selectedRecipe._id}}"
-        >Edit Recipe</button>
-        {{! delete recipe button }}
-        <button
-          class="btn btn-danger mt-3 delete-btn"
-          data-id="{{selectedRecipe._id}}"
-        >
-          Delete Recipe
-        </button>
+          <!-- Delete Button -->
+          <button
+            class="btn btn-danger ml-2 delete-btn"
+            data-id="{{selectedRecipe._id}}"
+          >
+            Delete Recipe
+          </button>
+        </div>
       {{else}}
         <p class="text-center">Select a recipe to view its details.</p>
       {{/if}}

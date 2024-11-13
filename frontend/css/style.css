@@ -2,6 +2,7 @@ body {
   font-family: "Times New Roman", Times, serif;
 }
 
+/* function-bar */
 .function-bar {
   padding: 20px 30px;
   background-color: beige;
@@ -9,6 +10,10 @@ body {
 
 .logo {
   width: 60px;
+}
+
+.function-btn {
+  font-size: 10px;
 }
 
 /* recipe-list */
@@ -94,4 +99,12 @@ body {
 
 .recipe-details__body {
   margin-top: 2%;
+}
+
+.right-btn-group {
+  margin-top: 30px;
+}
+
+.active {
+  background-color: #c9c7c7;
 }

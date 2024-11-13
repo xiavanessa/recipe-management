@@ -1,4 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
+  // actice class on current link
+  const activeLink = function () {
+    const links = document.querySelectorAll(".preview__link");
+    const currentPath = window.location.pathname; // Gets only the base path without query parameters
+
+    links.forEach(function (link) {
+      const linkPath = new URL(link.href).pathname; // Gets the base path of each link
+
+      if (linkPath === currentPath) {
+        link.classList.add("active");
+      } else {
+        link.classList.remove("active");
+      }
+    });
+  };
+
   //remember the current page
   const pagination = function () {
     document.querySelectorAll(".preview__link").forEach(function (link) {
@@ -181,37 +197,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
-  //search function
-  const search = function () {
-    document
-      .querySelector(".search-btn")
-      .addEventListener("click", async () => {
-        const query = document.getElementById("searchQuery").value;
-
-        try {
-          const response = await fetch(
-            `/api/recipes/search?q=${encodeURIComponent(query)}`
-          );
-          if (!response.ok)
-            throw new Error("Search failed with status " + response.status);
-          //Copy the URL and inject the search query as parameter
-          const newUrl = new URL(window.location);
-          newUrl.searchParams.set("q", query);
-          window.history.pushState({}, "", newUrl);
-
-          //Update the list
-          const recipes = await response.json();
-          // Update the UI with search results
-          updateRecipeList(recipes);
-        } catch (error) {
-          console.error("Error during search:", error);
-          alert(
-            "Error during search. Please check the server logs for more details."
-          );
-        }
-      });
-  };
-
   // Update the recipe list with search results
   const updateRecipeList = function (recipes) {
     const recipeListContainer = document.querySelector(".recipe-list ul");
@@ -237,17 +222,24 @@ document.addEventListener("DOMContentLoaded", function () {
         </a>
       `;
 
+      // add active class to the current link
+      if (window.location.pathname === `/api/recipe/${recipe._id}`) {
+        listItem.classList.add("active");
+      } else {
+        listItem.classList.remove("active");
+      }
+
       recipeListContainer.appendChild(listItem);
     });
+
+    if (recipes.length === 0) {
+      recipeListContainer.innerHTML = `
+        <p class="text-center">No recipes found.</p>
+      `;
+    }
   };
 
-  // Show the Back button when in search mode
-  const backBtnShow = function () {
-    document.querySelector(".search-btn").addEventListener("click", () => {
-      document.getElementById("backButton").style.display = "inline-block";
-    });
-  };
-
+  // Reset the view to the default view when the Back button is clicked
   const resetDefaultView = function () {
     document.getElementById("backButton").addEventListener("click", () => {
       // Clear the search input and remove the "q" parameter from the URL
@@ -259,28 +251,56 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
-  // Display search results on page load
-  const displayResearches = async function () {
+  // Initialize search functionality
+  const initializeSearch = function () {
+    // Set up search button click event
+    document
+      .querySelector(".search-btn")
+      .addEventListener("click", async () => {
+        const query = document.getElementById("searchQuery").value;
+        handleSearch(query);
+      });
+
+    // Check URL parameters for a search query on page load
     const urlParams = new URLSearchParams(window.location.search);
     const searchQuery = urlParams.get("q");
-
     if (searchQuery) {
-      // Populate the search input with the query
       document.getElementById("searchQuery").value = searchQuery;
+      handleSearch(searchQuery);
+    }
+  };
 
-      // Fetch and display search results
-      try {
-        const response = await fetch(
-          `/api/recipes/search?q=${encodeURIComponent(searchQuery)}`
-        );
-        const recipes = await response.json();
-        updateRecipeList(recipes);
+  const handleSearch = async function (query) {
+    // Check if query meets minimum length
+    if (query.length < 3) {
+      alert("Search query should be at least 3 characters long.");
+      return;
+    } else {
+      // Show the back button if we are in search mode
+      document.getElementById("backButton").style.display = "inline-block";
+    }
 
-        // Show the Back button since we are in search mode
-        document.getElementById("backButton").style.display = "inline-block";
-      } catch (error) {
-        console.error("Error loading search results on page load:", error);
-      }
+    try {
+      // Fetch search results
+      const response = await fetch(
+        `/api/recipes/search?q=${encodeURIComponent(query)}`
+      );
+      if (!response.ok)
+        throw new Error("Search failed with status " + response.status);
+
+      // Update the URL without reloading the page
+      const newUrl = new URL(window.location);
+      newUrl.searchParams.set("q", query);
+      window.history.pushState({}, "", newUrl);
+
+      // Update the recipe list with the fetched data
+      const recipes = await response.json();
+      updateRecipeList(recipes);
+    } catch (error) {
+      console.error("Error during search:", error);
+      alert(
+        "Error during search. Please check the server logs for more details."
+      );
     }
   };
 
@@ -289,10 +309,9 @@ document.addEventListener("DOMContentLoaded", function () {
     editRecipeBtns();
     deleteRecipeBtn();
     pagination();
-    search();
-    backBtnShow();
+    initializeSearch();
     resetDefaultView();
-    displayResearches();
+    activeLink();
   };
   init();
 });
