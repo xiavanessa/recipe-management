@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
           description: document.getElementById("edit-recipe-description").value,
           ingredients: document
             .getElementById("edit-recipe-ingredients")
-            .value.split(","),
+            .value.split(","), // Split the ingredients string into an array
           instructions: document.getElementById("edit-recipe-instructions")
             .value,
           image: document.getElementById("edit-recipe-image").value,

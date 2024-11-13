@@ -9,7 +9,7 @@ const recipeSchema = new mongoose.Schema(
     instructions: String,
     image: String,
   },
-  { timestamps: true }
+  { timestamps: true } //adds createdAt and updatedAt fields to the schema
 );
-
+// Create the Recipe model with the schema so we can use it in our application
 module.exports = mongoose.model("Recipe", recipeSchema);

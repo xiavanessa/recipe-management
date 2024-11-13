@@ -113,8 +113,9 @@ router.put("/api/recipes/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const updatedRecipe = req.body;
+    // Find recipe by ID and update it with new data(updatedRecipe)
     const recipe = await Recipe.findByIdAndUpdate(id, updatedRecipe, {
-      new: true,
+      new: true, // Return the updated document instead of the original
     });
 
     if (!recipe) return res.status(404).send("Recipe not found");
