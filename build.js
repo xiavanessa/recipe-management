@@ -40,4 +40,4 @@ function preRenderTemplate(templateFilePath, data, outputFilePath) {
 let data = { title: "recipe management", message: "Hello, World!" };
 
 // Pre-render the template
-preRenderTemplate("backend/views/index.handlebars", data, "index.html");
+preRenderTemplate("backend/views/layouts/main.handlebars", data, "index.html");
